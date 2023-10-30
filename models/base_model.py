@@ -1,26 +1,26 @@
 #!/usr/bin/python3
 """
-Contains class BaseModel
+module containing class BaseModel
 """
-
+import inspect
 from datetime import datetime
-import models
-from os import getenv
-import sqlalchemy
+
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
 
+import models
+from os import getenv
+import sqlalchemy
+
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
-if models.storage_t == "db":
-    Base = declarative_base()
-else:
-    Base = object
+Base = desclarative_base() if models.storage_t == "db" else object
 
 
 class BaseModel:
-    """The BaseModel class from which future classes will be derived"""
+    """BaseModel class which future classes will be derived"""
+
     if models.storage_t == "db":
         id = Column(String(60), primary_key=True)
         created_at = Column(DateTime, default=datetime.utcnow)
@@ -44,6 +44,7 @@ class BaseModel:
                 self.id = str(uuid.uuid4())
         else:
             self.id = str(uuid.uuid4())
+
             self.created_at = datetime.utcnow()
             self.updated_at = self.created_at
 
@@ -59,7 +60,7 @@ class BaseModel:
         models.storage.save()
 
     def to_dict(self):
-        """returns a dictionary containing all keys/values of the instance"""
+        """returns dict containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
         if "created_at" in new_dict:
             new_dict["created_at"] = new_dict["created_at"].strftime(time)
@@ -68,8 +69,17 @@ class BaseModel:
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
+
+        frame = inspect.currentframe().f_back
+        func_name = frame.f_code.co_name
+        class_name = ''
+        if 'self' in frame.f_locals:
+            class_name = frame.f_locals["self"].__class__.__name__
+        is_fs_writing = func_name == 'save' and class_name == 'FileStorage'
+        if 'password' in new_dict and not is_fs_writing:
+            del new_dict['password']
         return new_dict
 
     def delete(self):
-        """delete the current instance from the storage"""
+        """delete current instance from the storage"""
         models.storage.delete(self)
