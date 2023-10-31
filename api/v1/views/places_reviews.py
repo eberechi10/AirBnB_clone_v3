@@ -88,9 +88,9 @@ def put_review(review_id):
     if not elm:
         abort(400, "Not a JSON")
 
-    for key, vaiue in elm.items():
-        if key not in ['id', 'user_id', 'place_id', 'created_at', 'updated_at']:
-            setattr(Myobj, key, value)
+    for k, vaiue in elm.items():
+        if k not in ['id', 'user_id', 'place_id', 'created_at', 'updated_at']:
+            setattr(Myobj, k, value)
 
     storage.save()
     return make_response(jsonify(Myobj.to_dict()), 200)

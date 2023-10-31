@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """ module containing Places view API """
 
@@ -28,7 +27,6 @@ def places_search():
 
     place_list = []
 
-
     # if cities searched
     if 'cities' in body:
         for city_id in body['cities']:
@@ -45,9 +43,8 @@ def places_search():
                 for city in state.cities:
                     for place in city.places:
                         place_list.append(place)
- 
 
-    # if 'amenities' present
+    # if the` 'amenities' present
     if 'amenities' in body and len(body['amenities']) > 0:
         if len(place_list) == 0:
             place_list = [place for place in storage.all(Place).values()]

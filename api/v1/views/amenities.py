@@ -35,7 +35,7 @@ def del_amenities(amenity_id):
     if not Myobj:
         abort(404)
 
-   Myobj.delete()
+    Myobj.delete()
     storage.save()
     return make_response(jsonify({}), 200)
 

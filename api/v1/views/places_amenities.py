@@ -13,7 +13,8 @@ from os import getenv
 
 
 @app_views.route('/places/<place_id>/amenities',
-                 methods=['GET'], strict_slashes=False)
+                 methods=['GET'],
+                 strict_slashes=False)
 def place_amenities(place_id):
     """gets all Amenity objects of Place"""
     Myobj_place = storage.get(Place, place_id)
@@ -23,8 +24,8 @@ def place_amenities(place_id):
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         Myobj = [amenity.to_dict() for amenity in Myobj_place.amenities]
     else:
-       My obj = [storage.get(Amenity, amenity_id).to_dict()
-               for amenity_id in Myobj_place.amenity_ids]
+        Myobj = [storage.get(Amenity, amenity_id).to_dict()
+                 for amenity_id in Myobj_place.amenity_ids]
     return jsonify(Myobj)
 
 
@@ -63,7 +64,7 @@ def del_place_amenity(place_id, amenity_id):
     if not Myobj_place:
         abort(404)
 
-   Myobj_amenity = storage.get(Amenity, amenity_id)
+    Myobj_amenity = storage.get(Amenity, amenity_id)
     if not Myobj_amenity:
         abort(404)
 
