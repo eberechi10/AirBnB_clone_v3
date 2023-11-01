@@ -15,7 +15,10 @@ import sqlalchemy
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
-Base = desclarative_base() if models.storage_t == "db" else object
+if models.storage_t == "db":
+    Base = declarative_base()
+else:
+    Base = object
 
 
 class BaseModel:
